@@ -12,6 +12,12 @@
     <p class="eyebrow">POST #{{ currentPost.id }} · UTENTE {{ currentPost.userId }}</p>
     <h1>{{ currentPost.title }}</h1>
     <p class="detail-body">{{ currentPost.body }}</p>
+    @if (deleteError()) {
+      <p class="status error" role="alert">{{ deleteError() }}</p>
+    }
+    <button type="button" class="delete-button" [disabled]="deleting()" (click)="deletePost()">
+      {{ deleting() ? 'Eliminazione...' : 'Elimina post' }}
+    </button>
   </article>
 }
 

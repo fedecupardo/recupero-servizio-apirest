@@ -1,1 +1,16 @@
 :host { display: block; }
+
+.delete-button {
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.7rem 1rem;
+  color: #fff;
+  background: #b42318;
+  font: inherit;
+  cursor: pointer;
+}
+
+.delete-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}

@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Post } from '../../models/post';
 import { PostsService } from '../../services/posts.service';
 
@@ -12,11 +12,14 @@ import { PostsService } from '../../services/posts.service';
 })
 export class PostDetail implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly postsService = inject(PostsService);
 
   readonly post = signal<Post | null>(null);
   readonly loading = signal(true);
   readonly error = signal('');
+  readonly deleting = signal(false);
+  readonly deleteError = signal('');
   readonly currentId = signal(1);
 
   ngOnInit(): void {
@@ -43,6 +46,28 @@ export class PostDetail implements OnInit {
           : error.status === 0
             ? 'Rete non disponibile: impossibile recuperare il post.'
             : 'Si è verificato un errore nel recupero del post.');
+      },
+    });
+  }
+
+  deletePost(): void {
+    const currentPost = this.post();
+    if (!currentPost || this.deleting() || !window.confirm('Vuoi eliminare questo post?')) {
+      return;
+    }
+
+    this.deleteError.set('');
+    this.deleting.set(true);
+    this.postsService.delete(currentPost.id).subscribe({
+      next: () => {
+        this.deleting.set(false);
+        void this.router.navigate(['/posts']);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.deleting.set(false);
+        this.deleteError.set(error.status === 0
+          ? 'Rete non disponibile: il post non è stato eliminato.'
+          : 'Eliminazione non riuscita. Riprova.');
       },
     });
   }
