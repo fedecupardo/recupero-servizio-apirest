@@ -18,6 +18,7 @@ Aprire `http://localhost:4200/`. La pagina `/posts` mostra l'elenco filtrabile; 
 - Il conteggio e il filtro dell'elenco sono calcolati con `computed`.
 - Sono presenti indicatori di caricamento e messaggi distinti per errore di rete (`status 0`) e post inesistente (`404`).
 - JSONPlaceholder non persiste i POST: i nuovi post vengono quindi salvati nel `localStorage` del browser, così restano disponibili anche nel dettaglio e dopo un refresh.
+- L'eliminazione invia una richiesta DELETE e salva localmente gli ID rimossi, così i post eliminati non riappaiono dopo un refresh.
 
 ## Build
 

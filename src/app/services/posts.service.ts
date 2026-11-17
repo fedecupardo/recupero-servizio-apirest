@@ -1,12 +1,13 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
-import { Observable, map, of, tap } from 'rxjs';
+import { Observable, map, of, tap, throwError } from 'rxjs';
 import { NewPost, Post } from '../models/post';
 
 @Injectable({ providedIn: 'root' })
 export class PostsService {
   private readonly endpoint = 'https://jsonplaceholder.typicode.com/posts';
   private readonly storageKey = 'postplace-created-posts';
+  private readonly deletedStorageKey = 'postplace-deleted-post-ids';
   private readonly postsSignal = signal<Post[]>([]);
 
   readonly posts = this.postsSignal.asReadonly();
@@ -21,6 +22,14 @@ export class PostsService {
   }
 
   getById(id: number): Observable<Post> {
+    if (this.readDeletedPostIds().includes(id)) {
+      return throwError(() => new HttpErrorResponse({
+        status: 404,
+        statusText: 'Not Found',
+        url: `${this.endpoint}/${id}`,
+      }));
+    }
+
     const localPost = this.readCreatedPosts().find((post) => post.id === id);
     if (localPost) {
       this.postsSignal.update((posts) => this.mergePosts(posts, [localPost]));
@@ -56,8 +65,21 @@ export class PostsService {
     );
   }
 
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.endpoint}/${id}`).pipe(
+      tap(() => {
+        const deletedIds = new Set(this.readDeletedPostIds());
+        deletedIds.add(id);
+        this.saveDeletedPostIds([...deletedIds]);
+        this.postsSignal.update((posts) => posts.filter((post) => post.id !== id));
+      }),
+    );
+  }
+
   private mergeWithCreatedPosts(posts: Post[]): Post[] {
-    return this.mergePosts(posts, this.readCreatedPosts());
+    const deletedIds = new Set(this.readDeletedPostIds());
+    return this.mergePosts(posts, this.readCreatedPosts())
+      .filter((post) => !deletedIds.has(post.id));
   }
 
   private mergePosts(posts: Post[], additionalPosts: Post[]): Post[] {
@@ -92,5 +114,26 @@ export class PostsService {
 
   private saveCreatedPosts(posts: Post[]): void {
     localStorage.setItem(this.storageKey, JSON.stringify(posts));
+  }
+
+  private readDeletedPostIds(): number[] {
+    const storedIds = localStorage.getItem(this.deletedStorageKey);
+    if (!storedIds) {
+      return [];
+    }
+
+    try {
+      const ids = JSON.parse(storedIds) as unknown;
+      return Array.isArray(ids)
+        ? ids.filter((id): id is number => Number.isSafeInteger(id))
+        : [];
+    } catch (error) {
+      console.error('Impossibile leggere gli ID dei post eliminati.', error);
+      return [];
+    }
+  }
+
+  private saveDeletedPostIds(ids: number[]): void {
+    localStorage.setItem(this.deletedStorageKey, JSON.stringify(ids));
   }
 }
