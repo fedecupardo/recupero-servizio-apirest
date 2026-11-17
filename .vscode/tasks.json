@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "tasks": [
     {
+      // Avvia il server di sviluppo come attività riutilizzabile di VS Code.
       "type": "npm",
       "script": "start",
       "isBackground": true,
@@ -21,6 +22,7 @@
       }
     },
     {
+      // Avvia il runner dei test come attività di VS Code.
       "type": "npm",
       "script": "test",
       "isBackground": true,

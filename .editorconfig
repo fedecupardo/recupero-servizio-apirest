@@ -1,6 +1,7 @@
-# Editor configuration, see https://editorconfig.org
+# Impostazioni condivise dagli editor per mantenere coerente la formattazione.
 root = true
 
+# Valori predefiniti per tutti i file del progetto.
 [*]
 charset = utf-8
 indent_style = space
@@ -8,10 +9,12 @@ indent_size = 2
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+# Convenzioni specifiche per il codice TypeScript.
 [*.ts]
 quote_type = single
 ij_typescript_use_double_quotes = false
 
+# Nei Markdown si conservano gli spazi finali, usati per esempio per le interruzioni di riga.
 [*.md]
 max_line_length = off
 trim_trailing_whitespace = false

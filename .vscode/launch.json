@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "configurations": [
     {
+      // Avvia il browser dopo avere lanciato il server Angular.
       "name": "ng serve",
       "type": "chrome",
       "request": "launch",
@@ -10,6 +11,7 @@
       "url": "http://localhost:4200/"
     },
     {
+      // Apre nel browser la pagina del runner dei test Angular.
       "name": "ng test",
       "type": "chrome",
       "request": "launch",

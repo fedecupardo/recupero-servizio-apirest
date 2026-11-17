@@ -2,6 +2,7 @@
 /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "extends": "./tsconfig.json",
+  // La build dell'app non include i tipi globali dei test.
   "compilerOptions": {
     "types": []
   },

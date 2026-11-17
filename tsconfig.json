@@ -1,8 +1,10 @@
 /* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
 /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
+  // Configurazione TypeScript condivisa: i riferimenti separano build dell'app e test.
   "compileOnSave": false,
   "compilerOptions": {
+    // Controlli che rendono la compilazione più rigorosa e rilevano errori comuni.
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,

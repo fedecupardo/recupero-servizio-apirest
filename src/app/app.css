@@ -1,4 +1,5 @@
 :host {
+  /* L'host del componente radice occupa almeno l'altezza della finestra. */
   display: block;
   min-height: 100vh;
 }

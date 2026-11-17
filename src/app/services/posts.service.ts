@@ -8,12 +8,14 @@ export class PostsService {
   private readonly endpoint = 'https://jsonplaceholder.typicode.com/posts';
   private readonly storageKey = 'postplace-created-posts';
   private readonly deletedStorageKey = 'postplace-deleted-post-ids';
+  // Un signal privato mantiene lo stato; i componenti ricevono solo la vista in sola lettura.
   private readonly postsSignal = signal<Post[]>([]);
 
   readonly posts = this.postsSignal.asReadonly();
 
   constructor(private readonly http: HttpClient) {}
 
+  // Scarica i post, integra quelli creati nel browser e aggiorna lo stato condiviso.
   getAll(): Observable<Post[]> {
     return this.http.get<Post[]>(this.endpoint).pipe(
       map((posts) => this.mergeWithCreatedPosts(posts)),
@@ -22,6 +24,7 @@ export class PostsService {
   }
 
   getById(id: number): Observable<Post> {
+    // I post eliminati localmente non devono poter essere recuperati di nuovo dall'API.
     if (this.readDeletedPostIds().includes(id)) {
       return throwError(() => new HttpErrorResponse({
         status: 404,
@@ -53,6 +56,7 @@ export class PostsService {
 
   create(post: NewPost): Observable<Post> {
     return this.http.post<Post>(this.endpoint, post).pipe(
+      // JSONPlaceholder risponde ai POST ma non conserva i dati: si assegna un id locale e si salva il post.
       map((createdPost) => ({
         ...createdPost,
         id: this.nextLocalId(),
@@ -67,6 +71,7 @@ export class PostsService {
 
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.endpoint}/${id}`).pipe(
+      // La cancellazione dell'API demo non è persistente: si memorizza l'id per nasconderlo ai ricaricamenti.
       tap(() => {
         const deletedIds = new Set(this.readDeletedPostIds());
         deletedIds.add(id);
@@ -83,12 +88,14 @@ export class PostsService {
   }
 
   private mergePosts(posts: Post[], additionalPosts: Post[]): Post[] {
+    // La Map evita duplicati per id; l'ordinamento mantiene l'elenco prevedibile.
     const merged = new Map(posts.map((post) => [post.id, post]));
     additionalPosts.forEach((post) => merged.set(post.id, post));
     return [...merged.values()].sort((first, second) => first.id - second.id);
   }
 
   private nextLocalId(): number {
+    // Gli id locali iniziano oltre quelli standard di JSONPlaceholder (1-100).
     const highestId = Math.max(
       100,
       ...this.postsSignal().map((post) => post.id),
@@ -107,6 +114,7 @@ export class PostsService {
       const posts = JSON.parse(storedPosts) as unknown;
       return Array.isArray(posts) ? posts as Post[] : [];
     } catch (error) {
+      // Dati salvati non validi non bloccano l'app: si segnala il problema e si parte senza post locali.
       console.error('Impossibile leggere i post creati localmente.', error);
       return [];
     }
@@ -124,6 +132,7 @@ export class PostsService {
 
     try {
       const ids = JSON.parse(storedIds) as unknown;
+      // Si accettano solo numeri interi sicuri, scartando eventuali valori corrotti.
       return Array.isArray(ids)
         ? ids.filter((id): id is number => Number.isSafeInteger(id))
         : [];

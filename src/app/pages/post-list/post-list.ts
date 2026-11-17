@@ -15,11 +15,13 @@ export class PostList implements OnInit {
   private readonly postsService = inject(PostsService);
 
   readonly posts = this.postsService.posts;
+  // I signal permettono al template di aggiornarsi quando cambiano ricerca o stato della richiesta.
   readonly search = signal('');
   readonly loading = signal(false);
   readonly submitting = signal(false);
   readonly error = signal('');
   readonly submitError = signal('');
+  // Il filtro è derivato da ricerca e post: Angular lo ricalcola quando uno dei due cambia.
   readonly filteredPosts = computed(() => {
     const term = this.search().trim().toLowerCase();
     return this.posts().filter((post) =>
@@ -30,6 +32,7 @@ export class PostList implements OnInit {
   newPost: NewPost = { userId: 1, title: '', body: '' };
 
   ngOnInit(): void {
+    // Carica l'elenco una volta all'apertura della pagina e distingue gli errori di rete dagli altri.
     this.loading.set(true);
     this.postsService.getAll().subscribe({
       next: () => this.loading.set(false),
@@ -43,6 +46,7 @@ export class PostList implements OnInit {
   }
 
   createPost(): void {
+    // La validazione lato client evita di inviare campi vuoti o composti solo da spazi.
     if (!this.newPost.title.trim() || !this.newPost.body.trim()) {
       this.submitError.set('Titolo e testo sono obbligatori.');
       return;
