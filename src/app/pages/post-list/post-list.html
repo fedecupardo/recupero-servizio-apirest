@@ -12,12 +12,14 @@
   <input id="search" type="search" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Titolo o testo..." />
 </section>
 
+<!-- @if/@else mostrano uno solo tra caricamento, errore e contenuto. -->
 @if (loading()) {
   <p class="status loading" role="status">Caricamento dei post...</p>
 } @else if (error()) {
   <p class="status error" role="alert">{{ error() }}</p>
 } @else {
   <div class="post-grid">
+    <!-- track post.id aiuta Angular a riutilizzare gli elementi quando la lista cambia. -->
     @for (post of filteredPosts(); track post.id) {
       <article class="post-card">
         <span class="post-number">#{{ post.id }}</span>
@@ -36,6 +38,7 @@
     <p class="eyebrow">POST</p>
     <h2>Crea un nuovo post</h2>
   </div>
+  <!-- ngModel collega i campi al modello e ngSubmit chiama il metodo del componente. -->
   <form (ngSubmit)="createPost()">
     <label for="title">Titolo</label>
     <input id="title" name="title" [(ngModel)]="newPost.title" required />

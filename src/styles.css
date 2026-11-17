@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
+/* Queste regole sono globali; i CSS dei componenti definiscono solo gli stili specifici. */
 :root {
   color: #26342c;
   background: #fffdf9;
@@ -63,6 +64,7 @@ button:disabled { cursor: wait; opacity: .6; }
 .post-navigation { display: flex; justify-content: space-between; margin-top: 32px; max-width: 760px; }
 .post-navigation .disabled { color: #adb6b0; font-size: .85rem; font-weight: 700; }
 
+/* Su schermi piccoli le sezioni affiancate diventano verticali. */
 @media (max-width: 650px) {
   main.container { padding-top: 40px; }
   .page-heading, .create-card { display: block; }

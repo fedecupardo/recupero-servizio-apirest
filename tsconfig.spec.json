@@ -2,6 +2,7 @@
 /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "extends": "./tsconfig.json",
+  // I test usano le funzioni globali fornite da Vitest.
   "compilerOptions": {
     "types": [
       "vitest/globals"

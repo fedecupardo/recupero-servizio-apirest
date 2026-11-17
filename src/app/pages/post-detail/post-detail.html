@@ -1,5 +1,6 @@
 <a class="back-link" routerLink="/posts">← Torna ai post</a>
 
+<!-- Il contenuto dipende dallo stato del caricamento e dalla presenza del post. -->
 @if (loading()) {
   <p class="status loading" role="status">Caricamento del post...</p>
 } @else if (error()) {
@@ -22,6 +23,7 @@
 }
 
 <nav class="post-navigation" aria-label="Navigazione tra i post">
+  <!-- I limiti corrispondono agli id di JSONPlaceholder; agli estremi il link è disabilitato. -->
   @if (currentId() > 1) {
     <a [routerLink]="['/posts', currentId() - 1]">← Precedente</a>
   } @else {

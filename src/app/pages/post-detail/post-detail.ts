@@ -23,6 +23,7 @@ export class PostDetail implements OnInit {
   readonly currentId = signal(1);
 
   ngOnInit(): void {
+    // Legge l'id dalla rotta; la sottoscrizione reagisce anche se cambia parametro senza ricreare la pagina.
     this.route.paramMap.subscribe((params) => {
       const id = Number(params.get('id'));
       this.currentId.set(id);
@@ -31,6 +32,7 @@ export class PostDetail implements OnInit {
   }
 
   private loadPost(id: number): void {
+    // Azzera lo stato precedente prima di richiedere il post selezionato.
     this.loading.set(true);
     this.error.set('');
     this.post.set(null);
@@ -52,6 +54,7 @@ export class PostDetail implements OnInit {
 
   deletePost(): void {
     const currentPost = this.post();
+    // Impedisce richieste duplicate e chiede conferma prima di eliminare.
     if (!currentPost || this.deleting() || !window.confirm('Vuoi eliminare questo post?')) {
       return;
     }

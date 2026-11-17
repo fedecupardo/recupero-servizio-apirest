@@ -1,5 +1,6 @@
 :host { display: block; }
 
+/* Stile dedicato al pulsante distruttivo, distinto dal pulsante di pubblicazione. */
 .delete-button {
   border: 0;
   border-radius: 0.5rem;

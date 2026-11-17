@@ -1,1 +1,2 @@
+/* Rende il contenitore del componente a blocco, così occupa la larghezza disponibile. */
 :host { display: block; }

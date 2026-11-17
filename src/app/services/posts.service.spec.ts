@@ -15,6 +15,7 @@ describe('PostsService', () => {
   ];
 
   beforeEach(() => {
+    // Ogni test parte senza dati persistiti e usa un client HTTP simulato, senza chiamate reali.
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
@@ -29,6 +30,7 @@ describe('PostsService', () => {
   });
 
   it('removes a deleted post and keeps it hidden after reloading the list', () => {
+    // Verifica che l'id eliminato resti nascosto anche dopo un nuovo GET dell'elenco.
     service.getAll().subscribe();
     httpTestingController.expectOne(endpoint).flush(posts);
 
@@ -47,6 +49,7 @@ describe('PostsService', () => {
   });
 
   it('does not request a post that was deleted locally', () => {
+    // Un post cancellato localmente deve risultare 404 senza inviare un GET all'API.
     service.delete(1).subscribe();
     httpTestingController.expectOne({
       method: 'DELETE',
