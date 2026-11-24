@@ -42,15 +42,19 @@ export class PostDetail implements OnInit {
 
   // Metodo privato dedicato al recupero di un singolo post.
   private loadPost(id: number): void {
-    // Azzera lo stato precedente prima di richiedere il post selezionato.
+    // Reset dello stato: così il template mostra il caricamento e non mostra dati del post precedente.
     this.loading.set(true);
     this.error.set('');
     this.post.set(null);
+
+    // getById restituisce un Observable: subscribe avvia la richiesta HTTP e attende la risposta.
     this.postsService.getById(id).subscribe({
+      // next viene chiamato quando il post viene recuperato correttamente dal servizio.
       next: (post) => {
         this.post.set(post);
-        this.loading.set(false);
+        this.loading.set(false); // Il caricamento termina e il template può mostrare il dettaglio.
       },
+      // error gestisce i tre casi principali: risorsa assente, rete indisponibile o altro errore HTTP.
       error: (error: HttpErrorResponse) => {
         this.loading.set(false);
         this.error.set(error.status === 404
